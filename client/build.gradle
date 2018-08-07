@@ -1,5 +1,4 @@
 import java.nio.file.Files
-import java.nio.file.Paths
 
 buildscript {
     ext {
@@ -22,7 +21,7 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 10
 
-def createCompileArgsWithPatchArgs(Map<String,List<String>> patchMap, List<String> modulePath) {
+static def createCompileArgsWithPatchArgs(Map<String, List<String>> patchMap, List<String> modulePath) {
     def toPatch = []
     def patchedLibPaths = []
     patchMap.entrySet().forEach { entry ->
@@ -39,15 +38,16 @@ def createCompileArgsWithPatchArgs(Map<String,List<String>> patchMap, List<Strin
             toPatch.add("${entry.key}=${patchLibPaths.join(":")}")
         }
     }
-    modulePath.removeIf {item -> patchedLibPaths.contains(item) }
+    modulePath.removeIf { item -> patchedLibPaths.contains(item) }
     return toPatch
 }
-def createCompileArgsWithClasspath(List<String> ignoreModules, String classpath) {
+
+static def createCompileArgsWithClasspath(List<String> ignoreModules, String classpath) {
     def toModule = []
     def classpathArray = classpath.split(":")
     def toClasspath = []
-    classpathArray.each {item ->
-        if (!ignoreModules.any {ignoreModulePart -> item.contains(ignoreModulePart)}) {
+    classpathArray.each { item ->
+        if (!ignoreModules.any { ignoreModulePart -> item.contains(ignoreModulePart) }) {
             toModule.add(item)
         } else {
             toClasspath.add(item)
@@ -56,10 +56,11 @@ def createCompileArgsWithClasspath(List<String> ignoreModules, String classpath)
     }
     return toModule
 }
+
 compileJava {
     doFirst {
         options.compilerArgs = [
-                '--module-path', classpath.asPath, 
+                '--module-path', classpath.asPath,
         ]
         def toClasspathList = ['ribbon-loadbalancer',
                                "ribbon-core",
@@ -78,38 +79,38 @@ compileJava {
                                "jsr305",
                                "javax.annotation-api"]
         def toModulePath = createCompileArgsWithClasspath(toClasspathList, classpath.asPath)
-        
 
-        def modulePath =['--module-path', toModulePath.join(":")]
+
+        def modulePath = ['--module-path', toModulePath.join(":")]
         options.compilerArgs = modulePath //+ patchArgs
     }
 }
 task copyDeps {
+    //noinspection GroovyAssignabilityCheck
     doFirst {
         def args = compileJava.options.compilerArgs
         def idx = args.indexOf('--module-path')
         if (idx >= 0) {
             def modulePath = args[idx + 1].split(":")
-            def classpathDeps = compileJava.classpath.filter {item -> !modulePath.contains(item.toPath().toAbsolutePath().toString())}
-            
+            def classpathDeps = compileJava.classpath.filter { item -> !modulePath.contains(item.toPath().toAbsolutePath().toString()) }
             println(buildDir)
             def mp = buildDir.toPath().resolve("lib").resolve("mp")
             Files.createDirectories(mp)
             def cp = buildDir.toPath().resolve("lib").resolve("cp")
             Files.createDirectories(cp)
             def ignore = ['lombok']
-            modulePath.each {path -> 
-                def file = file(path)
-                if (!ignore.any {item -> file.getName().contains(item)}) {
+            modulePath.each { path ->
+                File file = file(path)
+                if (!ignore.any { item -> file.getName().contains(item) }) {
                     Files.copy(file.toPath(), mp.resolve(file.getName()))
                 }
             }
             classpathDeps.asPath.split(":").each { path ->
-                    def file = file(path)
-                    Files.copy(file.toPath(), cp.resolve(file.getName()))
+                File file = file(path)
+                Files.copy(file.toPath(), cp.resolve(file.getName()))
             }
         }
-        
+
     }
 }
 compileJava.finalizedBy copyDeps
