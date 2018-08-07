@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RemoteApplication {
+public class SecondRemoteApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(RemoteApplication.class, "--server.port=8092");
+        SpringApplication.run(SecondRemoteApplication.class, "--server.port=8091");
     }
 }

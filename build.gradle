@@ -48,27 +48,7 @@ def createCompileArgsWithPatchArgs(Map<String,List<String>> patchMap, String cla
 }
 
 
-def createCompileArgsWithClasspath(List<String> ignoreModules, String classpath) {
-    def toModule = []
-    def classpathArray = classpath.split(":")
-    classpathArray.each {item ->
-        if (!ignoreModules.any {ignoreModulePart -> item.contains(ignoreModulePart)}) {
-            toModule.add(item)
-        }
 
-    }
-    return ['--module-path', toModule.join(":")]
-}
-compileJava {
-    doFirst {
-//        options.compilerArgs = [
-//                '--module-path', classpath.asPath, 
-//        ]
-
-        options.compilerArgs = createCompileArgsWithClasspath( ['ribbon-loadbalancer', "ribbon-core", "ribbon", "jsr305", "javax.annotation-api"], classpath.asPath)
-        println(options.compilerArgs)
-    }
-}
 repositories {
     mavenCentral()
 }

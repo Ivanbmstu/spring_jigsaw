@@ -19,6 +19,32 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 10
 
+
+def createCompileArgsWithClasspath(List<String> ignoreModules, String classpath) {
+    def toModule = []
+    def classpathArray = classpath.split(":")
+    classpathArray.each {item ->
+        if (!ignoreModules.any {ignoreModulePart -> item.contains(ignoreModulePart)}) {
+            toModule.add(item)
+        }
+
+    }
+    return ['--module-path', toModule.join(":")]
+}
+compileJava {
+    doFirst {
+        options.compilerArgs = [
+                '--module-path', classpath.asPath, 
+        ]
+
+//        options.compilerArgs = createCompileArgsWithClasspath( ['ribbon-loadbalancer', "ribbon-core", "ribbon", "jsr305", "javax.annotation-api"], classpath.asPath)
+        println(options.compilerArgs)
+    }
+}
+
+
+
+
 repositories {
     mavenCentral()
 }
@@ -31,6 +57,7 @@ ext {
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-webflux')
     compile('org.springframework.cloud:spring-cloud-starter-openfeign')
+    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
     compileOnly('org.projectlombok:lombok')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('io.projectreactor:reactor-test')
