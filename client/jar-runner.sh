@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-java -p "./build/classes/java/main/:./build/lib/mp" -cp "./build/lib/cp/*" "$@" \
+java -p "./build/libs:./build/lib/mp" -cp "./build/lib/cp/*" "$@" \
 --add-opens java.base/java.util=xstream \
 --add-opens java.base/java.lang.reflect=xstream \
 --add-opens java.base/java.text=xstream \

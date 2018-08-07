@@ -6,10 +6,9 @@ open module front.module {
     requires spring.web;
     requires spring.core;
     requires spring.beans;
-    requires reactor.core;
-    requires spring.webflux;
     requires spring.context;
     requires java.sql;
+    requires spring.data.mongodb;
     requires java.validation;
     requires spring.cloud.netflix.eureka.client;
 }
