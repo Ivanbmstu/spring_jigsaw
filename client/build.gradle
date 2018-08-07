@@ -23,12 +23,17 @@ sourceCompatibility = 10
 def createCompileArgsWithClasspath(List<String> ignoreModules, String classpath) {
     def toModule = []
     def classpathArray = classpath.split(":")
+    def toClasspath = []
     classpathArray.each {item ->
         if (!ignoreModules.any {ignoreModulePart -> item.contains(ignoreModulePart)}) {
             toModule.add(item)
+        } else {
+            toClasspath.add(item)
         }
 
     }
+    println("To classpath: ")
+    println(toClasspath)
     return ['--module-path', toModule.join(":")]
 }
 compileJava {
@@ -37,7 +42,20 @@ compileJava {
                 '--module-path', classpath.asPath, 
         ]
 
-//        options.compilerArgs = createCompileArgsWithClasspath( ['ribbon-loadbalancer', "ribbon-core", "ribbon", "jsr305", "javax.annotation-api"], classpath.asPath)
+        def toClasspathList = ['ribbon-loadbalancer',
+                               "ribbon-core",
+                               "ribbon-transport",
+                               "ribbon-httpclient",
+                               "stax-api",
+                               "java-xml",
+                               "spring-aop",
+                               "aopalliance",
+                               "ribbon",
+                               "xmlpull",
+                               "xpp3_min",
+                               "jsr305",
+                               "javax.annotation-api"]
+        options.compilerArgs = createCompileArgsWithClasspath(toClasspathList, classpath.asPath)
         println(options.compilerArgs)
     }
 }
