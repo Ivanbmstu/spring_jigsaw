@@ -1,0 +1,89 @@
+buildscript {
+    ext {
+        springBootVersion = '2.0.3.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+plugins {
+//    id "ru.javasaw" version "0.0.4" 
+}
+//javasawConfig.enableJarScan=true
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 10
+def createCompileArgsWithPatchArgs(Map<String,List<String>> patchMap, String classpath) {
+    def toModule = []
+    def toPatch = []
+    def classpathArray = classpath.split(":")
+    def patchedLibPaths = []
+    patchMap.entrySet().forEach { entry ->
+        def patchLibPaths = []
+        entry.value.each { sourcesModules ->
+            def foundedPath = classpathArray.find { item -> item.contains(sourcesModules) }
+            if (foundedPath != null) {
+                patchedLibPaths.add(foundedPath)
+                patchLibPaths.add(foundedPath)
+            }
+        }
+        if (!patchLibPaths.isEmpty()) {
+            toPatch.add("--patch-module")
+            toPatch.add("${entry.key}=${patchLibPaths.join(":")}")
+        }
+    }
+    classpathArray.each {item ->
+        if (!patchedLibPaths.contains(item)) {
+            toModule.add(item)
+        }
+    }
+    return ['--module-path', toModule.join(":")] + toPatch
+}
+
+
+def createCompileArgsWithClasspath(List<String> ignoreModules, String classpath) {
+    def toModule = []
+    def classpathArray = classpath.split(":")
+    classpathArray.each {item ->
+        if (!ignoreModules.any {ignoreModulePart -> item.contains(ignoreModulePart)}) {
+            toModule.add(item)
+        }
+
+    }
+    return ['--module-path', toModule.join(":")]
+}
+compileJava {
+    doFirst {
+//        options.compilerArgs = [
+//                '--module-path', classpath.asPath, 
+//        ]
+
+        options.compilerArgs = createCompileArgsWithClasspath( ['ribbon-loadbalancer', "ribbon-core", "ribbon", "jsr305", "javax.annotation-api"], classpath.asPath)
+        println(options.compilerArgs)
+    }
+}
+repositories {
+    mavenCentral()
+}
+ext {
+    springCloudVersion = 'Finchley.RELEASE'
+}
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+dependencies {
+
+    compile('org.springframework.boot:spring-boot-starter-webflux')
+    compile('org.springframework.cloud:spring-cloud-starter-openfeign')
+    compileOnly('org.projectlombok:lombok')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}
