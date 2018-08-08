@@ -42,6 +42,7 @@ public class FrontApplicationTests {
 
     @Test
     public void contextLoads() throws Exception {
+        
         when(remoteClient.callRemote(anyInt())).thenReturn(new RemoteDataDTO("1", "1"));
         System.out.println("test");
         mockMvc.perform(get("/do-work").param("id", "1")).andExpect(content().string("1")).andDo(print());

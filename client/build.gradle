@@ -19,7 +19,7 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.8
+sourceCompatibility = 10
 
 static def createCompileArgsWithPatchArgs(Map<String, List<String>> patchMap, List<String> modulePath) {
     def toPatch = []
@@ -57,34 +57,63 @@ static def createCompileArgsWithClasspath(List<String> ignoreModules, String cla
     return toModule
 }
 
-//compileJava {
-//    doFirst {
-//        options.compilerArgs = [
-//                '--module-path', classpath.asPath,
-//        ]
-//        def toClasspathList = ['ribbon-loadbalancer',
-//                               "ribbon-core",
-//                               "ribbon-transport",
-//                               "ribbon-httpclient",
-//                               "stax-api",
-//                               "java-xml",
-//                               "spring-aop",
-//                               "aopalliance",
-//                               "ribbon",
-//                               "xmlpull",
-//                               "bson",
-//                               "mongodb-driver",
-//                               "mongodb-driver-core",
-//                               "xpp3_min",
-//                               "jsr305",
-//                               "javax.annotation-api"]
-//        def toModulePath = createCompileArgsWithClasspath(toClasspathList, classpath.asPath)
-//
-//
-//        def modulePath = ['--module-path', toModulePath.join(":")]
-//        options.compilerArgs = modulePath //+ patchArgs
-//    }
-//}
+compileJava {
+    doFirst {
+        options.compilerArgs = [
+                '--module-path', classpath.asPath,
+        ]
+        def toClasspathList = ['ribbon-loadbalancer',
+                               "ribbon-core",
+                               "ribbon-transport",
+                               "ribbon-httpclient",
+                               "stax-api",
+                               "java-xml",
+                               "spring-aop",
+                               "aopalliance",
+                               "ribbon",
+                               "xmlpull",
+                               "bson",
+                               "mongodb-driver",
+                               "mongodb-driver-core",
+                               "xpp3_min",
+                               "jsr305",
+                               "javax.annotation-api"]
+        def toModulePath = createCompileArgsWithClasspath(toClasspathList, classpath.asPath)
+
+
+        def modulePath = ['--module-path', toModulePath.join(":")]
+        options.compilerArgs = modulePath //+ patchArgs
+    }
+}
+
+compileTestJava {
+    doFirst {
+
+        def toClasspathList = ['ribbon-loadbalancer',
+                               "ribbon-core",
+                               "ribbon-transport",
+                               "ribbon-httpclient",
+                               "stax-api",
+                               "java-xml",
+                               "spring-aop",
+                               "aopalliance",
+                               "ribbon",
+                               "xmlpull",
+                               "bson",
+                               "mongodb-driver",
+                               "mongodb-driver-core",
+                               "jsonassert",
+                               "android-json ",
+                               "xpp3_min",
+                               "jsr305",
+                               "javax.annotation-api"]
+        def toModulePath = createCompileArgsWithClasspath(toClasspathList, classpath.asPath)
+        def toPatch = createCompileArgsWithPatchArgs(['hamcrest-core':['hamcrest-library']], toModulePath)
+
+        def modulePath = ['--module-path', toModulePath.join(":")]
+        options.compilerArgs = modulePath + toPatch + ['--patch-module', "front.module=" + files(sourceSets.test.java.srcDirs).asPath]
+    }
+}
 task copyDeps {
     //noinspection GroovyAssignabilityCheck
     doFirst {
@@ -139,6 +168,32 @@ test {
     useJUnitPlatform {
         includeEngines 'junit-jupiter'
     }
+//    doFirst {
+//        def toClasspathList = ['ribbon-loadbalancer',
+//                               "ribbon-core",
+//                               "ribbon-transport",
+//                               "ribbon-httpclient",
+//                               "stax-api",
+//                               "java-xml",
+//                               "spring-aop",
+//                               "aopalliance",
+//                               "ribbon",
+//                               "xmlpull",
+//                               "bson",
+//                               "slf4j",
+//                               "mongodb-driver",
+//                               "mongodb-driver-core",
+//                               "jsonassert",
+//                               "android-json ",
+//                               "xpp3_min",
+//                               "jsr305",
+//                               "javax.annotation-api"]
+//        def toModulePath = createCompileArgsWithClasspath(toClasspathList, classpath.asPath)
+//        def toPatch = createCompileArgsWithPatchArgs(['hamcrest-core':['hamcrest-library']], toModulePath)
+//
+//        def modulePath = ['--module-path', toModulePath.join(":")]
+//        jvmArgs = modulePath + toPatch
+//    }
 
 }
 dependencies {
@@ -151,6 +206,9 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-mongodb')
     compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
     compileOnly('org.projectlombok:lombok')
+
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    testCompileOnly('org.projectlombok:lombok')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('io.projectreactor:reactor-test')
 }
