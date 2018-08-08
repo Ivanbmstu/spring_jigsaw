@@ -19,7 +19,7 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 10
+sourceCompatibility = 1.8
 
 static def createCompileArgsWithPatchArgs(Map<String, List<String>> patchMap, List<String> modulePath) {
     def toPatch = []
@@ -57,34 +57,34 @@ static def createCompileArgsWithClasspath(List<String> ignoreModules, String cla
     return toModule
 }
 
-compileJava {
-    doFirst {
-        options.compilerArgs = [
-                '--module-path', classpath.asPath,
-        ]
-        def toClasspathList = ['ribbon-loadbalancer',
-                               "ribbon-core",
-                               "ribbon-transport",
-                               "ribbon-httpclient",
-                               "stax-api",
-                               "java-xml",
-                               "spring-aop",
-                               "aopalliance",
-                               "ribbon",
-                               "xmlpull",
-                               "bson",
-                               "mongodb-driver",
-                               "mongodb-driver-core",
-                               "xpp3_min",
-                               "jsr305",
-                               "javax.annotation-api"]
-        def toModulePath = createCompileArgsWithClasspath(toClasspathList, classpath.asPath)
-
-
-        def modulePath = ['--module-path', toModulePath.join(":")]
-        options.compilerArgs = modulePath //+ patchArgs
-    }
-}
+//compileJava {
+//    doFirst {
+//        options.compilerArgs = [
+//                '--module-path', classpath.asPath,
+//        ]
+//        def toClasspathList = ['ribbon-loadbalancer',
+//                               "ribbon-core",
+//                               "ribbon-transport",
+//                               "ribbon-httpclient",
+//                               "stax-api",
+//                               "java-xml",
+//                               "spring-aop",
+//                               "aopalliance",
+//                               "ribbon",
+//                               "xmlpull",
+//                               "bson",
+//                               "mongodb-driver",
+//                               "mongodb-driver-core",
+//                               "xpp3_min",
+//                               "jsr305",
+//                               "javax.annotation-api"]
+//        def toModulePath = createCompileArgsWithClasspath(toClasspathList, classpath.asPath)
+//
+//
+//        def modulePath = ['--module-path', toModulePath.join(":")]
+//        options.compilerArgs = modulePath //+ patchArgs
+//    }
+//}
 task copyDeps {
     //noinspection GroovyAssignabilityCheck
     doFirst {
@@ -113,7 +113,7 @@ task copyDeps {
 
     }
 }
-compileJava.finalizedBy copyDeps
+//compileJava.finalizedBy copyDeps
 
 jar {
     enabled = true
@@ -133,9 +133,19 @@ repositories {
 
 ext {
     springCloudVersion = 'Finchley.SR1'
+    junitVersion = '5.2.0'
 }
+test {
+    useJUnitPlatform {
+        includeEngines 'junit-jupiter'
+    }
 
+}
 dependencies {
+    
+    testCompile "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testCompile "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testCompile "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.cloud:spring-cloud-starter-openfeign')
     compile('org.springframework.boot:spring-boot-starter-data-mongodb')

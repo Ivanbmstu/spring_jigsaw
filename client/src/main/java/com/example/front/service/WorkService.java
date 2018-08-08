@@ -19,7 +19,7 @@ public class WorkService {
 
     public String doWork(Integer id) {
         log.info("calling work with id " + id);
-        var remoteDataDTO = remoteClient.callRemote(id);
+        RemoteDataDTO remoteDataDTO = remoteClient.callRemote(id);
         remoteDataRepository.save(new RemoteData(UUID.randomUUID().toString(), remoteDataDTO.getBody(), remoteDataDTO.getServiceId()));
         log.info("saved new entity");
         return remoteDataDTO.getBody();
