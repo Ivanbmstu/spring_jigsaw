@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 @Data
 @AllArgsConstructor
-public class RemoteData {
+public class BusinessData {
     private String id;
     private String body;
     private String serviceId;

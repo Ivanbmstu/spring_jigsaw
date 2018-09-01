@@ -2,7 +2,6 @@ package com.example.front;
 
 import com.example.front.controller.RemoteClient;
 import com.example.front.controller.dto.RemoteDataDTO;
-import com.example.front.repository.RemoteDataRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,10 +27,10 @@ public class FrontApplicationTests {
     private WebApplicationContext wac;
 
     private MockMvc mockMvc;
-    
+
     @MockBean
     private RemoteClient remoteClient;
-    
+
     @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
@@ -40,9 +39,8 @@ public class FrontApplicationTests {
 
     @Test
     public void contextLoads() throws Exception {
-        
+
         when(remoteClient.callRemote(anyInt())).thenReturn(new RemoteDataDTO("1", "1"));
-        System.out.println("test");
         mockMvc.perform(get("/do-work").param("id", "1")).andExpect(content().string("1")).andDo(print());
     }
 

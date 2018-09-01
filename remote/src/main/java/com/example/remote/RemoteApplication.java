@@ -11,6 +11,6 @@ import java.io.InputStreamReader;
 public class RemoteApplication {
 
     public static void main(String[] args) throws IOException {
-        SpringApplication.run(RemoteApplication.class, "--server.port=8092", "--trace=true");
+        SpringApplication.run(RemoteApplication.class, "--server.port=8092");
     }
 }
