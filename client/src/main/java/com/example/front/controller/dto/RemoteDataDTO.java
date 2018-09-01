@@ -1,9 +1,14 @@
 package com.example.front.controller.dto;
 
 
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+import javax.xml.bind.annotation.XmlRootElement;
+
+@Data
+@NoArgsConstructor
+@XmlRootElement
 public class RemoteDataDTO {
     private String body;
     private String serviceId;
