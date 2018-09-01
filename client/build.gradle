@@ -142,7 +142,7 @@ task copyDeps {
 
     }
 }
-//compileJava.finalizedBy copyDeps
+compileJava.finalizedBy copyDeps
 
 jar {
     enabled = true
@@ -164,36 +164,45 @@ ext {
     springCloudVersion = 'Finchley.SR1'
     junitVersion = '5.2.0'
 }
+configurations {
+
+
+    testCompile {
+        // ACHTUNG! без этого будут сыпаться ошибки, также будет ошибка если slf4j в module-path
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+    }
+}
 test {
     useJUnitPlatform {
         includeEngines 'junit-jupiter'
     }
-//    doFirst {
-//        def toClasspathList = ['ribbon-loadbalancer',
-//                               "ribbon-core",
-//                               "ribbon-transport",
-//                               "ribbon-httpclient",
-//                               "stax-api",
-//                               "java-xml",
-//                               "spring-aop",
-//                               "aopalliance",
-//                               "ribbon",
-//                               "xmlpull",
-//                               "bson",
-//                               "slf4j",
-//                               "mongodb-driver",
-//                               "mongodb-driver-core",
-//                               "jsonassert",
-//                               "android-json ",
-//                               "xpp3_min",
-//                               "jsr305",
-//                               "javax.annotation-api"]
-//        def toModulePath = createCompileArgsWithClasspath(toClasspathList, classpath.asPath)
-//        def toPatch = createCompileArgsWithPatchArgs(['hamcrest-core':['hamcrest-library']], toModulePath)
-//
-//        def modulePath = ['--module-path', toModulePath.join(":")]
-//        jvmArgs = modulePath + toPatch
-//    }
+    doFirst {
+        def toClasspathList = ['ribbon-loadbalancer',
+                               "ribbon-core",
+                               "ribbon-transport",
+                               "ribbon-httpclient",
+                               "stax-api",
+                               "java-xml",
+                               "spring-aop",
+                               "aopalliance",
+                               "ribbon",
+                               "xmlpull",
+                               "bson",
+                //будет ошибка если slf4j в module-path, может там потребоваться если будет зависимость в module-info
+                               "slf4j",
+                               "mongodb-driver",
+                               "mongodb-driver-core",
+                               "jsonassert",
+                               "android-json ",
+                               "xpp3_min",
+                               "jsr305",
+                               "javax.annotation-api"]
+        def toModulePath = createCompileArgsWithClasspath(toClasspathList, classpath.asPath)
+        def toPatch = createCompileArgsWithPatchArgs(['hamcrest-core':['hamcrest-library']], toModulePath)
+
+        def modulePath = ['--module-path', toModulePath.join(":")]
+        jvmArgs = modulePath + toPatch
+    }
 
 }
 dependencies {

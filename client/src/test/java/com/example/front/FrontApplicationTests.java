@@ -28,9 +28,7 @@ public class FrontApplicationTests {
     private WebApplicationContext wac;
 
     private MockMvc mockMvc;
-
-    @MockBean
-    private RemoteDataRepository remoteDataRepository;
+    
     @MockBean
     private RemoteClient remoteClient;
     
