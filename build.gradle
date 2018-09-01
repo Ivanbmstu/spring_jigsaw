@@ -63,7 +63,9 @@ configure(allprojects) {
             imports {
                 mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
             }
-            dependency 'org.projectlombok:lombok:1.16.0'
+            dependency 'org.projectlombok:lombok:1.18.2'
+            dependency "com.sun.xml.ws:jaxws-tools:2.3.0.2"
+            dependency 'com.sun.activation:javax.activation:1.2.0'
 
         }
 
