@@ -1,7 +1,5 @@
 package com.example.front;
 
-import com.example.front.controller.RemoteClient;
-import com.example.front.controller.RemoteJaxbClient;
 import com.example.front.controller.dto.RemoteDataDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
