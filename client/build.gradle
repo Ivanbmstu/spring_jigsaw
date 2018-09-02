@@ -15,6 +15,7 @@ plugins {
     id 'ru.vyarus.quality' version '3.1.1'
 }
 apply plugin: 'java'
+apply plugin: "jacoco"
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
@@ -154,7 +155,7 @@ task copyDeps {
     }
 }
 compileJava.finalizedBy copyDeps
-
+test.finalizedBy jacocoTestReport
 jar {
     enabled = true
 }
@@ -219,6 +220,11 @@ test {
         jvmArgs = modulePath + toPatch
     }
 
+}
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.example.front.FrontApplication'
+    }
 }
 bootJar {
     mainClassName = 'com.example.front.FrontApplication'

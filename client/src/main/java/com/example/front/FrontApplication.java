@@ -15,6 +15,7 @@ import java.io.IOException;
 public class FrontApplication {
 
     public static void main(String[] args) throws IOException {
+        System.out.println("Running module: " + FrontApplication.class.getModule().getName());
         SpringApplication.run(FrontApplication.class, args);
     }
 }
