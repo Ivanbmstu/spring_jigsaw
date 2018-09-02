@@ -1,50 +1,74 @@
 package com.example.front;
 
-import com.example.front.controller.dto.RemoteDataDTO;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.matching.EqualToPattern;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import ru.lanwen.wiremock.ext.WiremockResolver;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"spring.cloud.discovery.enabled=false"})
+@ExtendWith({SpringExtension.class, WiremockResolver.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class FrontApplicationTests {
     @Autowired
     private WebApplicationContext wac;
 
     private MockMvc mockMvc;
 
-    @MockBean
-    private RemoteClient remoteClient;
-    @MockBean
-    private RemoteJaxbClient remoteJaxbClient;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
     }
 
+    private void prepareStub(WireMockServer server) {
+        server.stubFor(get("/call?id=1").withQueryParam("id", new EqualToPattern("1"))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
+                        .withStatus(HttpStatus.OK.value())
+                        .withBody("{\"body\":\"processed with id 1\",\"serviceId\":\"remote\"}")));
+
+        server.stubFor(get("/call/xml?id=1").withQueryParam("id", new EqualToPattern("1"))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+                        .withStatus(HttpStatus.OK.value())
+                        .withBody("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><remoteDTO><body>" +
+                                "processed with id 1</body><serviceId>remote</serviceId></remoteDTO>")));
+    }
 
     @Test
-    public void contextLoads() throws Exception {
+    void jsonResult(@WiremockResolver.Wiremock(factory = StaticPortWireMockConfigFactory.class) WireMockServer server) throws Exception {
+        prepareStub(server);
 
-        when(remoteClient.callRemote(anyInt())).thenReturn(new RemoteDataDTO("1", "1"));
-        when(remoteJaxbClient.callRemote(anyInt())).thenReturn("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><remoteDTO><body>processed with id 1</body><serviceId>172.25.49.61:remote:8091</serviceId></remoteDTO>");
-        mockMvc.perform(get("/do-work").param("id", "1"))
-                .andExpect(content().string("1 processed with id 1"))
+        ResultActions actions = mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/do-work")
+                .param("id", "1"));
+        actions.andExpect(content().json("{\"result\":\"processed with id 1 processed with id 1\"}"))
+                .andDo(print());
+    }
+
+    @Test
+    void xmlResult(@WiremockResolver.Wiremock(factory = StaticPortWireMockConfigFactory.class) WireMockServer server) throws Exception {
+        prepareStub(server);
+
+        ResultActions actions = mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/do-work-xml")
+                .param("id", "1"));
+        actions.andExpect(content().string("<?xml version=\"1.0\" encoding=\"UTF-8\" " +
+                "standalone=\"yes\"?><responseDTO><result>processed with id 1 processed with id 1</result></responseDTO>"))
                 .andDo(print());
     }
 

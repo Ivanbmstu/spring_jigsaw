@@ -8,7 +8,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 import javax.validation.constraints.Positive;
 
@@ -19,14 +18,14 @@ public class TestController {
 
     private final WorkService workService;
 
-    @GetMapping("/do-work")
-    public Mono<ResponseDTO> loadRemoteCallResult(@Positive @RequestParam Integer id) {
-        return workService.doWork(id).map(ResponseDTO::new);
+    @GetMapping(value = "/do-work")
+    public ResponseDTO loadRemoteCallResult(@Positive @RequestParam Integer id) {
+        return new ResponseDTO(workService.doWork(id));
     }
 
 
     @GetMapping(value = "/do-work-xml", produces = MediaType.APPLICATION_XML_VALUE)
-    public Mono<ResponseDTO> loadRemoteCallXmlResult(@Positive @RequestParam Integer id) {
-        return workService.doWork(id).map(ResponseDTO::new);
+    public ResponseDTO loadRemoteCallXmlResult(@Positive @RequestParam Integer id) {
+        return new ResponseDTO(workService.doWork(id));
     }
 }

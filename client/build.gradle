@@ -23,22 +23,11 @@ apply plugin: 'io.spring.dependency-management'
 quality {
     pmd = false
     exclude '**/module-info.java' //important! checkstyle cant parse module-info
-//    findbugs = false // false to disable automatic plugin activation
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 10
-
-
-compileJava {
-    doFirst {
-        options.compilerArgs = [
-                '--module-path', classpath.asPath,
-        ]
-
-    }
-}
 
 
 test.finalizedBy jacocoTestReport
@@ -73,7 +62,11 @@ configurations {
         exclude group: 'ch.qos.logback', module: 'logback-classic'
     }
 }
-
+test {
+    useJUnitPlatform {
+        includeEngines 'junit-jupiter'
+    }
+}
 bootJar {
     mainClassName = 'com.example.front.FrontApplication'
 }
@@ -82,16 +75,18 @@ dependencies {
     testCompile "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testCompile "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     testCompile "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
-    compile('org.springframework.boot:spring-boot-starter-webflux')
+    compile('org.springframework.boot:spring-boot-starter-web')
 
 
-//    compile 'javax.xml.bind:jaxb-api'
-//    compile 'com.sun.xml.ws:jaxws-tools'
-//    compile 'com.sun.activation:javax.activation'
+    compile 'javax.xml.bind:jaxb-api'
+    compile 'com.sun.xml.ws:jaxws-tools'
+    compile 'com.sun.activation:javax.activation'
     compileOnly('org.projectlombok:lombok')
 
     compile 'org.slf4j:slf4j-api:1.7.25'
     testCompileOnly('org.projectlombok:lombok')
+    testCompile 'com.github.tomakehurst:wiremock'
+    testCompile 'ru.lanwen.wiremock:wiremock-junit5'
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('io.projectreactor:reactor-test')
 }

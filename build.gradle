@@ -67,7 +67,8 @@ configure(allprojects) {
             dependency "com.sun.xml.ws:jaxws-tools:2.3.0.2"
             dependency 'com.sun.activation:javax.activation:1.2.0'
             dependency 'javax.xml.bind:jaxb-api:2.3.0'
-
+            dependency "com.github.tomakehurst:wiremock:2.18.0"
+            dependency "ru.lanwen.wiremock:wiremock-junit5:1.2.0"
         }
 
     }
