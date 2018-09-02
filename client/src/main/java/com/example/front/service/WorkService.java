@@ -26,8 +26,12 @@ public class WorkService {
         log.info("calling work with id " + id);
         RemoteDataDTO remoteDataDTO = remoteClient.callRemote(id);
         RemoteDataDTO remoteJaxbDataDTO = unmarshall(remoteJaxbClient.callRemote(id));
-        businessDataRepository.save(new BusinessData(UUID.randomUUID().toString(), remoteDataDTO.getBody(), remoteDataDTO.getServiceId()));
-        businessDataRepository.save(new BusinessData(UUID.randomUUID().toString(), remoteJaxbDataDTO.getBody(), remoteJaxbDataDTO.getServiceId()));
+        BusinessData data = new BusinessData(UUID.randomUUID().toString(),
+                remoteDataDTO.getBody(), remoteDataDTO.getServiceId());
+        businessDataRepository.save(data);
+        BusinessData data1 = new BusinessData(UUID.randomUUID().toString(),
+                remoteJaxbDataDTO.getBody(), remoteJaxbDataDTO.getServiceId());
+        businessDataRepository.save(data1);
         log.info("saved new entities");
         return remoteDataDTO.getBody() + " " + remoteJaxbDataDTO.getBody();
     }

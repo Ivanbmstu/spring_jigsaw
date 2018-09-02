@@ -20,5 +20,5 @@ public class TestController {
     public String loadRemoteCallResult(@Positive @RequestParam Integer id) {
         return workService.doWork(id);
     }
-    
+
 }
