@@ -1,6 +1,7 @@
 package com.example.front;
 
 import com.example.front.controller.RemoteClient;
+import com.example.front.controller.RemoteJaxbClient;
 import com.example.front.controller.dto.RemoteDataDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,8 @@ public class FrontApplicationTests {
 
     @MockBean
     private RemoteClient remoteClient;
+    @MockBean
+    private RemoteJaxbClient remoteJaxbClient;
 
     @BeforeEach
     public void setup() {
@@ -41,7 +44,10 @@ public class FrontApplicationTests {
     public void contextLoads() throws Exception {
 
         when(remoteClient.callRemote(anyInt())).thenReturn(new RemoteDataDTO("1", "1"));
-        mockMvc.perform(get("/do-work").param("id", "1")).andExpect(content().string("1")).andDo(print());
+        when(remoteJaxbClient.callRemote(anyInt())).thenReturn("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><remoteDTO><body>processed with id 1</body><serviceId>172.25.49.61:remote:8091</serviceId></remoteDTO>");
+        mockMvc.perform(get("/do-work").param("id", "1"))
+                .andExpect(content().string("1 processed with id 1"))
+                .andDo(print());
     }
 
 }

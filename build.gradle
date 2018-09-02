@@ -66,6 +66,7 @@ configure(allprojects) {
             dependency 'org.projectlombok:lombok:1.18.2'
             dependency "com.sun.xml.ws:jaxws-tools:2.3.0.2"
             dependency 'com.sun.activation:javax.activation:1.2.0'
+            dependency 'javax.xml.bind:jaxb-api:2.3.0'
 
         }
 
