@@ -54,14 +54,7 @@ ext {
     springCloudVersion = 'Finchley.SR1'
     junitVersion = '5.2.0'
 }
-configurations {
 
-
-    testCompile {
-        // ACHTUNG! без этого будут сыпаться ошибки, также будет ошибка если slf4j в module-path
-        exclude group: 'ch.qos.logback', module: 'logback-classic'
-    }
-}
 test {
     useJUnitPlatform {
         includeEngines 'junit-jupiter'
