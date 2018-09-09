@@ -4,6 +4,7 @@ import com.example.front.controller.dto.RemoteDataDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Value;
 
 import static com.example.front.util.JaxbUmarshall.unmarshall;
 
@@ -11,7 +12,8 @@ import static com.example.front.util.JaxbUmarshall.unmarshall;
 @Slf4j
 public class WorkService {
     private RestTemplate restTemplate;
-
+    @Value("${remote.port:8092}")
+    private String remotePort;
     public WorkService() {
         this.restTemplate = new RestTemplate();
     }
