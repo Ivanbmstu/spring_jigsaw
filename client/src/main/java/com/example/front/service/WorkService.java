@@ -20,7 +20,7 @@ public class WorkService {
 
     public String doWork(Integer id) {
         log.info("calling work with id " + id);
-        final String remoteHost = "http://localhost:8092";
+        final String remoteHost = "http://localhost:" + remotePort;
         var monoRemoteDataDTO = restTemplate.getForObject(remoteHost + "/call?id=" + id, RemoteDataDTO.class);
         var monoRemoteJaxbDataDTO = unmarshall(restTemplate.getForObject(remoteHost + "/call/xml?id=" + id,
                 String.class));
