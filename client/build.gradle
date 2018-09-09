@@ -71,9 +71,9 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
 
 
-    compile 'javax.xml.bind:jaxb-api'
-    compile 'com.sun.xml.ws:jaxws-tools'
-    compile 'com.sun.activation:javax.activation'
+//    compile 'javax.xml.bind:jaxb-api'
+//    compile 'com.sun.xml.ws:jaxws-tools'
+//    compile 'com.sun.activation:javax.activation'
     compileOnly('org.projectlombok:lombok')
 
     compile 'org.slf4j:slf4j-api:1.7.25'
