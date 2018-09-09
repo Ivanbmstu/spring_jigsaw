@@ -9,3 +9,6 @@ spring:
 eureka:
  client:
   enabled: false
+debug: true
+remote:
+  port: 8888

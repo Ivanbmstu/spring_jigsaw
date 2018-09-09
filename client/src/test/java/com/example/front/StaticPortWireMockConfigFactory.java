@@ -9,7 +9,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 
 public class StaticPortWireMockConfigFactory implements WiremockConfigFactory {
 
-    private static final int PORT_NUMBER = 8092;
+    private static final int PORT_NUMBER = 8888;
 
     @Override
     public WireMockConfiguration create() {
