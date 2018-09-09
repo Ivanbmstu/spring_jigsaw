@@ -28,7 +28,13 @@ quality {
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 10
-
+compileJava {
+    doFirst {
+        options.compilerArgs = [
+                '--module-path', classpath.asPath
+        ]
+    }
+}
 
 test.finalizedBy jacocoTestReport
 jar {
