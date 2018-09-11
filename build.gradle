@@ -1,8 +1,11 @@
 buildscript {
     ext {
-        springBootVersion = '2.0.3.RELEASE'
+        springBootVersion = '2.1.0.M2'
     }
     repositories {
+        maven { url "http://repo.spring.io/libs-release" }
+        maven { url "http://repo.spring.io/libs-milestone" }
+        maven { url "http://repo.spring.io/libs-snapshot" }
         mavenCentral()
     }
     dependencies {
@@ -19,7 +22,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 10
+sourceCompatibility = 11
 def createCompileArgsWithPatchArgs(Map<String,List<String>> patchMap, String classpath) {
     def toModule = []
     def toPatch = []
@@ -50,6 +53,9 @@ def createCompileArgsWithPatchArgs(Map<String,List<String>> patchMap, String cla
 
 
 repositories {
+    maven { url "http://repo.spring.io/libs-release" }
+    maven { url "http://repo.spring.io/libs-milestone" }
+    maven { url "http://repo.spring.io/libs-snapshot" }
     mavenCentral()
 }
 ext {
@@ -63,6 +69,7 @@ configure(allprojects) {
             imports {
                 mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
             }
+            dependency 'org.xmlunit:xmlunit-core:2.6.2'
             dependency 'org.projectlombok:lombok:1.18.2'
             dependency "com.sun.xml.ws:jaxws-tools:2.3.0.2"
             dependency 'com.sun.activation:javax.activation:1.2.0'

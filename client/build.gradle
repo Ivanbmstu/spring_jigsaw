@@ -2,9 +2,12 @@ import java.nio.file.Files
 
 buildscript {
     ext {
-        springBootVersion = '2.0.4.RELEASE'
+        springBootVersion = '2.1.0.M2'
     }
     repositories {
+        maven { url "http://repo.spring.io/libs-release" }
+        maven { url "http://repo.spring.io/libs-milestone" }
+        maven { url "http://repo.spring.io/libs-snapshot" }
         mavenCentral()
     }
     dependencies {
@@ -22,14 +25,14 @@ apply plugin: 'io.spring.dependency-management'
 
 quality {
     pmd = false
-    findbugs=false
     spotbugs=false
+    findbugs=false
     exclude '**/module-info.java' //important! checkstyle cant parse module-info
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 10
+sourceCompatibility = 11
 compileJava {
     doFirst {
 //        options.compilerArgs = [
@@ -54,6 +57,9 @@ sourceSets {
 
 
 repositories {
+    maven { url "http://repo.spring.io/libs-release" }
+    maven { url "http://repo.spring.io/libs-milestone" }
+    maven { url "http://repo.spring.io/libs-snapshot" }
     mavenCentral()
 }
 
@@ -83,6 +89,8 @@ dependencies {
     compile 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
 
+    compile 'org.xmlunit:xmlunit-core:2.6.2'
+    compile 'org.xmlunit:xmlunit-legacy:2.6.2'
 //    compile 'javax.xml.bind:jaxb-api'
 //    compile 'org.glassfish.jaxb:jaxb-runtime'
 //    compile 'com.sun.activation:javax.activation'
