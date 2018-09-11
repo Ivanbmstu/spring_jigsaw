@@ -83,9 +83,9 @@ dependencies {
     compile 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
 
-    compile 'javax.xml.bind:jaxb-api'
-    compile 'org.glassfish.jaxb:jaxb-runtime'
-    compile 'com.sun.activation:javax.activation'
+//    compile 'javax.xml.bind:jaxb-api'
+//    compile 'org.glassfish.jaxb:jaxb-runtime'
+//    compile 'com.sun.activation:javax.activation'
     compileOnly('org.projectlombok:lombok')
 
     compile 'org.slf4j:slf4j-api:1.7.25'
