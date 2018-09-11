@@ -83,7 +83,7 @@ dependencies {
 
 
 //    compile 'javax.xml.bind:jaxb-api'
-//    compile 'com.sun.xml.ws:jaxws-tools'
+//    compile 'org.glassfish.jaxb:jaxb-runtime'
 //    compile 'com.sun.activation:javax.activation'
     compileOnly('org.projectlombok:lombok')
 
