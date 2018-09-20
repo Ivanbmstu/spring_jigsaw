@@ -48,12 +48,6 @@ jar {
         attributes 'Main-Class': 'com.example.front.FrontApplication'
     }
 }
-sourceSets {
-    // for java 9+ jigsaw startup
-    main {
-        output.resourcesDir = "build/classes/java/main"
-    }
-}
 
 
 repositories {
@@ -107,5 +101,12 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+sourceSets {
+    // for java 9+ jigsaw startup
+    main {
+        output.resourcesDir = "build/classes/java/main"
     }
 }

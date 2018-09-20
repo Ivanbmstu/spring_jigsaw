@@ -1,4 +1,4 @@
-package com.example.front.util;
+package com.example.front.utils;
 
 import com.example.front.controller.dto.RemoteDataDTO;
 
