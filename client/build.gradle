@@ -13,14 +13,194 @@ apply plugin: 'io.spring.dependency-management'
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 11
+
+static def createCompileArgsWithPatchArgs(Map<String, List<String>> patchMap, List<String> modulePath) {
+    def toPatch = []
+    def patchedLibPaths = []
+    patchMap.entrySet().forEach { entry ->
+        def patchLibPaths = []
+        entry.value.each { sourcesModules ->
+            def foundedPath = modulePath.find { item -> item.contains(sourcesModules) }
+            if (foundedPath != null) {
+                patchedLibPaths.add(foundedPath)
+                patchLibPaths.add(foundedPath)
+            }
+        }
+        if (!patchLibPaths.isEmpty()) {
+            toPatch.add("--patch-module")
+            toPatch.add("${entry.key}=${patchLibPaths.join(":")}")
+        }
+    }
+    modulePath.removeIf { item -> patchedLibPaths.contains(item) }
+    return toPatch
+}
+
+static def createCompileArgsWithClasspath(List<String> ignoreModules, String classpath) {
+    def toModule = []
+    def classpathArray = classpath.split(":")
+    def toClasspath = []
+    classpathArray.each { item ->
+        if (!ignoreModules.any { ignoreModulePart -> item.contains(ignoreModulePart) }) {
+            toModule.add(item)
+        } else {
+            toClasspath.add(item)
+        }
+    }
+    return toModule
+}
+
+static def createCompileArgsClasspathFiles(List<String> classpathSource, String classpath) {
+    def classpathArray = classpath.split(":")
+    def toClasspath = []
+    classpathArray.each { item ->
+        if (classpathSource.any { ignoreModulePart -> item.contains(ignoreModulePart) }) {
+            toClasspath.add(item)
+        }
+    }
+    return toClasspath
+}
+
+static def getClasspathJarPath(String contains, String classpath) {
+    return classpath.split(":").find { item -> item.contains(contains) }
+}
+
 compileJava {
     doFirst {
         options.compilerArgs = [
-                '--module-path', classpath.asPath
+                '--module-path', classpath.asPath,
         ]
+
+        def toClasspathList = [
+                "ribbon-core",
+                "ribbon-loadbalancer",
+                "ribbon-transport",
+                "ribbon"
+        ]
+        def toModulePath = createCompileArgsWithClasspath(toClasspathList, classpath.asPath)
+        def toPatch = createCompileArgsWithPatchArgs([
+              'java.annotation'  : ["jsr305"]
+        ], toModulePath)
+        def toClasspath = createCompileArgsClasspathFiles(toClasspathList, classpath.asPath)
+        options.annotationProcessorPath = files(getClasspathJarPath("lombok", classpath.asPath))
+        classpath = files(toClasspath)
+        def modulePath = ['--module-path', toModulePath.join(":")]
+        options.compilerArgs = modulePath + toPatch
     }
 }
 
+compileTestJava {
+    doFirst {
+
+        def toClasspathList = [
+                "ribbon-core",
+                "ribbon-loadbalancer",
+                "ribbon-transport",
+                "ribbon",
+                "javax.servlet-api",
+                "tomcat-embed-core",
+                "android-json",
+                "jsonassert",
+                "handlebars-helpers",
+                "handlebars",
+        ]
+        def toModulePath = createCompileArgsWithClasspath(toClasspathList, classpath.asPath)
+        def toPatch = createCompileArgsWithPatchArgs([
+                'hamcrest.core': ['hamcrest-library'],
+                'java.annotation'  : ["jsr305"]
+        ], toModulePath)
+        def toClasspath = createCompileArgsClasspathFiles(toClasspathList, classpath.asPath)
+        classpath = files(toClasspath)
+        def modulePath = ['--module-path', toModulePath.join(":")] + ['--patch-module', "client.main=${files(sourceSets.test.java.srcDirs).asPath}"]
+        options.compilerArgs = modulePath + toPatch
+    }
+}
+test {
+    useJUnitPlatform {
+        includeEngines 'junit-jupiter'
+    }
+    doFirst {
+        def toClasspathList = [
+                "ribbon-core",
+                "ribbon-loadbalancer",
+                "ribbon-transport",
+                "ribbon",
+                "javax.servlet-api",
+                "tomcat-embed-core",
+                "android-json",
+                "jsonassert",
+                "handlebars-helpers",
+                "handlebars",
+                "slf4j"
+        ]
+        def toModulePath = createCompileArgsWithClasspath(toClasspathList, classpath.asPath)
+        def toPatch = createCompileArgsWithPatchArgs(
+                [
+                        'hamcrest.core': ['hamcrest-library'],
+                        'java.annotation': ["jsr305"]
+                ], toModulePath)
+        def toClasspath = createCompileArgsClasspathFiles(toClasspathList, classpath.asPath)
+        classpath = files(toClasspath)
+
+        def modulePath = ['--module-path', toModulePath.join(":")]
+        jvmArgs = modulePath + toPatch
+    }
+}
+// copying deps from compile to dirs: classpath -> cp, module-path -> mp, patch-module -> pm
+task copyDeps {
+    //noinspection GroovyAssignabilityCheck
+    doFirst {
+        def args = compileJava.options.compilerArgs
+        def idx = args.indexOf('--module-path')
+        if (idx >= 0)
+        {
+            def modulePath = args[idx + 1].split(":")
+            def classpathDeps = compileJava.classpath.filter { item -> !modulePath.contains(item.toPath().toAbsolutePath().toString()) }
+            println(buildDir)
+            def mp = buildDir.toPath().resolve("lib").resolve("mp")
+            Files.createDirectories(mp)
+            def cp = buildDir.toPath().resolve("lib").resolve("cp")
+            Files.createDirectories(cp)
+            def pm = buildDir.toPath().resolve("lib").resolve("pm")
+            Files.createDirectories(pm)
+            def ignore = ['lombok']
+            modulePath.each { path ->
+                File file = file(path)
+                if (!ignore.any { item -> file.getName().contains(item) }) {
+                    Files.copy(file.toPath(), mp.resolve(file.getName()))
+                }
+            }
+            def classpath = classpathDeps.asPath.split(":")
+            if (classpath.length > 0) {
+                classpath.each { path ->
+                    if (!path.isEmpty()) {
+                        File file = file(path)
+                        Files.copy(file.toPath(), cp.resolve(file.getName()))
+                    }
+                }
+            }
+
+            def patchIndexes = []
+            args.eachWithIndex { elem, index ->
+                if (elem == "--patch-module") {
+                    patchIndexes.add(index + 1)
+                }
+            }
+            patchIndexes.each {
+                copyPatchModuleDeps(args[it], pm)
+            }
+        }
+    }
+}
+static def copyPatchModuleDeps(String patchModuleArg, java.nio.file.Path to) {
+    def splitedArgs = patchModuleArg.split("=")
+    splitedArgs[1].split(":").each {
+        if (!it.isEmpty()) {
+            File file = new File(it)
+            Files.copy(file.toPath(), to.resolve(file.getName()))
+        }
+    }
+}
+compileJava.finalizedBy copyDeps
 test.finalizedBy jacocoTestReport
 jar {
     enabled = true
