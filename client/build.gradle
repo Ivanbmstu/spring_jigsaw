@@ -130,7 +130,9 @@ test {
                 "jsonassert",
                 "handlebars-helpers",
                 "handlebars",
-                "slf4j"
+                "slf4j",
+                "logback-classic",
+                "logback-core"
         ]
         def toModulePath = createCompileArgsWithClasspath(toClasspathList, classpath.asPath)
         def toPatch = createCompileArgsWithPatchArgs(
@@ -139,9 +141,11 @@ test {
                         'java.annotation': ["jsr305"]
                 ], toModulePath)
         def toClasspath = createCompileArgsClasspathFiles(toClasspathList, classpath.asPath)
-        classpath = files(toClasspath)
+        classpath = files(toClasspath) + files(sourceSets.main.java.outputDir)
 
-        def modulePath = ['--module-path', toModulePath.join(":")]
+        def modulePath = ['--module-path', toModulePath.join(":")] + 
+                ['--patch-module', "client.main=${files(sourceSets.test.java.outputDir).asPath}"] + 
+                ['--add-modules', 'client.main']
         jvmArgs = modulePath + toPatch
     }
 }
