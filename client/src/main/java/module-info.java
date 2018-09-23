@@ -8,4 +8,9 @@ open module client.main {
 //    requires slf4j.api;
 
     requires java.desktop; // required by lombok...
+    
+    requires java.sql;
+    requires java.instrument;
+    
+    requires jdk.unsupported;
 }
