@@ -1,4 +1,4 @@
-package com.example.front;
+package com.example.client;
 
 
 import com.github.tomakehurst.wiremock.common.Slf4jNotifier;

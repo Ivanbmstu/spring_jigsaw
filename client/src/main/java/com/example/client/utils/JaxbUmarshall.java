@@ -1,6 +1,6 @@
-package com.example.front.utils;
+package com.example.client.utils;
 
-import com.example.front.controller.dto.RemoteDataDTO;
+import com.example.client.controller.dto.RemoteDataDTO;
 
 import javax.xml.bind.JAXB;
 import java.io.StringReader;

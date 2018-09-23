@@ -1,20 +1,3 @@
 spring:
  application:
   name: client
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/test
-      username: user
-      password: 1
-eureka:
- client:
-  registryFetchIntervalSeconds: 5
-  serviceUrl:
-   defaultZone: http://127.0.0.1:8763/eureka/
- instance:
-  leaseRenewalIntervalInSeconds: 10
-  appname: ${spring.application.name}
-  virtualHostName : ${spring.application.name}
-  preferIpAddress: false
-  metadataMap:
-   instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}

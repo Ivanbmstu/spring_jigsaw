@@ -1,14 +1,8 @@
 spring:
  application:
   name: client
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/test
-      username: user
-      password: 1
 eureka:
  client:
   enabled: false
-debug: true
 remote:
   port: 8888

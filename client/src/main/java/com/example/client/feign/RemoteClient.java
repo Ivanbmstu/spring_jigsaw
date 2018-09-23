@@ -1,6 +1,6 @@
-package com.example.front.client;
+package com.example.client.feign;
 
-import com.example.front.controller.dto.RemoteDataDTO;
+import com.example.client.controller.dto.RemoteDataDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

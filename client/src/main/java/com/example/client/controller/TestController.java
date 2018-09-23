@@ -1,7 +1,7 @@
-package com.example.front.controller;
+package com.example.client.controller;
 
-import com.example.front.controller.dto.ResponseDTO;
-import com.example.front.service.WorkService;
+import com.example.client.controller.dto.ResponseDTO;
+import com.example.client.service.WorkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;

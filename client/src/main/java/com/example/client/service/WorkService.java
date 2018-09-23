@@ -1,12 +1,12 @@
-package com.example.front.service;
+package com.example.client.service;
 
-import com.example.front.client.RemoteClient;
+import com.example.client.feign.RemoteClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import static com.example.front.utils.JaxbUmarshall.unmarshall;
+import static com.example.client.utils.JaxbUmarshall.unmarshall;
 
 @Service
 @Slf4j

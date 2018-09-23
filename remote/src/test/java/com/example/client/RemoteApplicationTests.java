@@ -1,4 +1,4 @@
-package com.example.front;
+package com.example.client;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

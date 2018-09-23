@@ -1,4 +1,4 @@
-package com.example.front;
+package com.example.client;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.matching.EqualToPattern;
@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith({SpringExtension.class, WiremockResolver.class})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "remote.port=8888")
-public class FrontApplicationTests {
+public class ClientApplicationTests {
     @Autowired
     private WebApplicationContext wac;
 

@@ -1,4 +1,4 @@
-package com.example.front.controller.dto;
+package com.example.client.controller.dto;
 
 
 import lombok.AllArgsConstructor;
