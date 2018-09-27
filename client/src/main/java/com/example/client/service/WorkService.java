@@ -3,7 +3,6 @@ package com.example.client.service;
 import com.example.client.feign.RemoteClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import static com.example.client.utils.JaxbUmarshall.unmarshall;
@@ -14,10 +13,6 @@ import static com.example.client.utils.JaxbUmarshall.unmarshall;
 public class WorkService {
 
     private final RemoteClient remoteClient;
-
-    @Value("${remote.port:8092}")
-    private String remotePort;
-
 
     public String doWork(Integer id) {
         log.info("calling work with id " + id);
