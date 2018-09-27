@@ -2,11 +2,11 @@
 Spring and jigsaw example with spring cloud feign depndency 
 
 
-Branches:
-step0: стартовый проект
-step1: нет модулей, запуск на classpath, пофикшены зависимости на jaxb, удаленный из Java 11 
-step2: добавлен module-info, сборка в gradle с опцией --module-path
-step3: добавлены зависимости на другие модули
-step4: пофикшены split packages, добавлены методы в build.gradle для создания опций запуска/компиляции
-step5: финальный результат для сборки с тестами
-step6: финальный результат, запуск модуля через jar-runner.sh
+Branches:<br>
+step0: стартовый проект<br>
+step1: нет модулей, запуск на classpath, пофикшены зависимости на jaxb, удаленный из Java 11 <br>
+step2: добавлен module-info, сборка в gradle с опцией --module-path<br>
+step3: добавлены зависимости на другие модули<br>
+step4: пофикшены split packages, добавлены методы в build.gradle для создания опций запуска/компиляции<br>
+step5: финальный результат для сборки с тестами<br>
+step6: финальный результат, запуск модуля через jar-runner.sh<br>
