@@ -209,7 +209,7 @@ test.finalizedBy jacocoTestReport
 jar {
     enabled = true
     manifest {
-        attributes 'Main-Class': 'com.example.front.FrontApplication'
+        attributes 'Main-Class': 'com.example.client.ClientApplication'
     }
 }
 
