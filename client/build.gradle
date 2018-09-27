@@ -139,7 +139,7 @@ test {
                         'java.annotation': ["jsr305"]
                 ], toModulePath)
         def toClasspath = createCompileArgsClasspathFiles(toClasspathList, classpath.asPath)
-        classpath = files(toClasspath)
+        classpath = files(toClasspath) + files(sourceSets.main.java.outputDir)
 
         def modulePath = ['--module-path', toModulePath.join(":")]
         jvmArgs = modulePath + toPatch
