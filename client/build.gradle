@@ -16,7 +16,7 @@ sourceCompatibility = 11
 compileJava {
     doFirst {
         options.compilerArgs = [
-                '--module-path', classpath.asPath
+                '--module-path', classpath.asPath, '--add-reads', 'client.main=ALL-UNNAMED', '--add-modules', 'java.desktop'
         ]
     }
 }
