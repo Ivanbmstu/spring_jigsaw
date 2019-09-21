@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+group 'test.example'
+version '0.0.1-SNAPSHOT'
+
+sourceCompatibility = 11
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'test.example'
+            artifactId = 'dependent'
+            version = '1.0'
+
+            from components.java
+        }
+    }
+}
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

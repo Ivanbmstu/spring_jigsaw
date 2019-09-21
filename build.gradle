@@ -4,28 +4,27 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
+
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 11
 
 
 
-repositories {
-    mavenCentral()
-}
+
+
 ext {
     springCloudVersion = 'Finchley.RELEASE'
 }
-configure(allprojects) {
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+    apply plugin: 'java'
 
-
+    dependencies {
+        compileOnly 'org.projectlombok:lombok:1.18.2'
+    }
+    sourceCompatibility = 11
 }
 
-dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.2'
-    compile "com.sun.xml.ws:jaxws-tools:2.3.0.2"
-    compile 'com.sun.activation:javax.activation:1.2.0'
-    compile 'javax.xml.bind:jaxb-api:2.3.0'
 
-}
