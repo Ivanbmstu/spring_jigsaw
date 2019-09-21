@@ -1,6 +1,3 @@
 rootProject.name = 'demo'
-include 'moduler'
-include 'remote'
-include 'client'
-include 'eureka'
+
 
